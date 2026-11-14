@@ -48,26 +48,31 @@ def create_products():
 
 @app.route("/products", methods=["GET"])
 def list_products():
-    """List products, optionally filtered by name, category, or availability."""
-    products = Product.all()
-    name = request.args.get("name")
-    category = request.args.get("category")
-    available = request.args.get("available")
+    """List products, applying any supplied name/category/availability filters."""
+    query = Product.query
 
+    name = request.args.get("name")
     if name:
-        products = Product.find_by_name(name)
-    if category:
+        query = query.filter(Product.name == name)
+
+    description = request.args.get("description")
+    if description:
+        query = query.filter(Product.description == description)
+
+    category = request.args.get("category")
+    if category and category.upper() != "UNKNOWN":
         try:
-            category_value = Category[category.upper()]
+            query = query.filter(Product.category == Category[category.upper()])
         except KeyError:
             abort(status.HTTP_400_BAD_REQUEST, description=f"Invalid category: {category}")
-        products = Product.find_by_category(category_value)
+
+    available = request.args.get("available")
     if available is not None:
         if available.lower() not in ("true", "false"):
             abort(status.HTTP_400_BAD_REQUEST, description="available must be true or false")
-        products = Product.find_by_availability(available.lower() == "true")
+        query = query.filter(Product.available.is_(available.lower() == "true"))
 
-    return jsonify([product.serialize() for product in products]), status.HTTP_200_OK
+    return jsonify([product.serialize() for product in query.all()]), status.HTTP_200_OK
 
 
 @app.route("/products/<int:product_id>", methods=["GET"])
