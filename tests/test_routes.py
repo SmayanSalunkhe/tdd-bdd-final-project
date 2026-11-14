@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from service import app
 from service.common import status
-from service.models import Product, db, init_db
+from service.models import Category, Product, db, init_db
 from tests.factories import ProductFactory
 
 DATABASE_URI = os.getenv("DATABASE_URI", "sqlite:///test.db")
@@ -130,8 +130,7 @@ class TestProductRoutes(unittest.TestCase):
         self.assertEqual([item["name"] for item in response.get_json()], ["Fedora"])
 
     def test_list_products_by_category(self):
-        self.client.post(BASE_URL, json=self._payload(category=__import__(
-            "service.models", fromlist=["Category"]).Category.FOOD))
+        self.client.post(BASE_URL, json=self._payload(category=Category.FOOD))
         response = self.client.get(BASE_URL, query_string={"category": "FOOD"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(all(item["category"] == "FOOD" for item in response.get_json()))
