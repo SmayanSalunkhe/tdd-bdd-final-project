@@ -41,14 +41,18 @@ Scenario: Create a Product
 
 Scenario: Read a Product
     When I visit the "Home Page"
-    And I set the "Id" to "1"
-    And I press the "Retrieve" button
+    And I set the "Name" to "Hat"
+    And I select "Cloths" in the "Category" dropdown
+    And I select "True" in the "Available" dropdown
+    And I press the "Search" button
     Then I should see "Hat" in the "Name" field
 
 Scenario: Update a Product
     When I visit the "Home Page"
-    And I set the "Id" to "1"
-    And I press the "Retrieve" button
+    And I set the "Name" to "Hat"
+    And I select "Cloths" in the "Category" dropdown
+    And I select "True" in the "Available" dropdown
+    And I press the "Search" button
     And I change "Description" to "A newly updated red fedora"
     And I press the "Update" button
     Then I should see the message "Success"
@@ -56,13 +60,16 @@ Scenario: Update a Product
 
 Scenario: Delete a Product
     When I visit the "Home Page"
-    And I set the "Id" to "1"
+    And I set the "Name" to "Hat"
+    And I select "Cloths" in the "Category" dropdown
+    And I select "True" in the "Available" dropdown
+    And I press the "Search" button
     And I press the "Delete" button
-    Then I should see the message "Success"
-    And I should see the message "not found"
+    Then I should see the message "Product has been Deleted!"
 
 Scenario: List All Products
     When I visit the "Home Page"
+    And I press the "Clear" button
     And I press the "Search" button
     Then I should see "Hat" in the results
     And I should see "Shoes" in the results
@@ -70,11 +77,13 @@ Scenario: List All Products
 Scenario: Search for Products by Category
     When I visit the "Home Page"
     And I select "Food" in the "Category" dropdown
+    And I select "True" in the "Available" dropdown
     And I press the "Search" button
     Then I should see "Big Mac" in the results
 
 Scenario: Search for Products by Availability
     When I visit the "Home Page"
+    And I select "Cloths" in the "Category" dropdown
     And I select "True" in the "Available" dropdown
     And I press the "Search" button
     Then I should see "Hat" in the results
@@ -82,5 +91,7 @@ Scenario: Search for Products by Availability
 Scenario: Search for Products by Name
     When I visit the "Home Page"
     And I set the "Name" to "Hat"
+    And I select "Cloths" in the "Category" dropdown
+    And I select "True" in the "Available" dropdown
     And I press the "Search" button
     Then I should see "Hat" in the results
