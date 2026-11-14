@@ -90,8 +90,8 @@ class TestProductModel(unittest.TestCase):
 
     def test_list_all_products(self):
         """It should List all Products."""
-        ProductFactory.create_batch(3)
-        for product in Product.query.all():
+        products = ProductFactory.create_batch(3)
+        for product in products:
             product.id = None
             product.create()
         self.assertEqual(len(Product.all()), 3)
